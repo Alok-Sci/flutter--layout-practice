@@ -14,7 +14,7 @@ class FetchDataRoute extends StatefulWidget {
 
 class _FetchDataRouteState extends State<FetchDataRoute> {
   String url =
-      'https://jsonplaceholder.typicode.com/albums'; // ! initialize the url to be used for sending request
+      'https://jsonplaceholder.typicode.com/users'; // ! initialize the url to be used for sending request
 
   late Future<List<User>> // ! Future associated with the user class
       futureUsers; // ! declare a future type late variable
@@ -32,64 +32,104 @@ class _FetchDataRouteState extends State<FetchDataRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: Icon(Icons.data_array_rounded),
-          centerTitle: true,
-          title: Text('Fetch Data from API')),
+        leading: Icon(Icons.data_array_rounded),
+        centerTitle: true,
+        title: Text('Fetch Data from API'),
+      ),
       body: Container(
         padding: EdgeInsets.all(20),
-        child: //ListView(
-            //   children: [
-            //     ListTile(
-            //       leading: Icon(Icons.person_add),
-            //       title: Text('This is Static title'),
-            //       subtitle: Text('This is subtitle'),
-            //     ),
-            //     SizedBox(height: 20),
-            //     ListTile(
-            //       leading: Icon(Icons.person_add),
-            //       title: Text('This is Static item'),
-            //       subtitle: Text('This is subtitle'),
-            //     ),
-            //     SizedBox(height: 20),
-            //     ListTile(
-            //       // shape: CircleBorder(eccentricity: 2.3),
-            //       tileColor: Colors.teal.shade100,
-            //       visualDensity: VisualDensity(horizontal: 2.3),
-            //       leading: Icon(Icons.person_add),
-            //       title: Text('This is Static item'),
-            //       subtitle: Text('This is subtitle'),
-            //     ),
-            FutureBuilder<List<User>>(
+        child: FutureBuilder<List<User>>(
           // ! FutureBuilder associated with the User class
           future: futureUsers,
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              // return ListTile( // ! for generating single widget 
-              //   leading: Icon(Icons.person_add_alt),
-              //   title: Text(snapshot.data!.id.toString()),
-              //   subtitle: Text(
-              //     snapshot.data!.title,
-              //   ),
-              // );
-              // return ListView.builder( // ! to generate multiple widgets
-              //   itemCount: snapshot.data!.length,
-              //   itemBuilder: (context, index) {
-              //     User user = snapshot.data![index];
-              //     return ListTile(
-              //       leading: Icon(Icons.person_add_alt),
-              //       title: Text(user.id.toString()),
-              //       subtitle: Text(user.title),
-              //     );
-              //   },
-              // );
+            // ! handle loading state
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
+                ),
+              );
             }
-            // if (snapshot.hasData) {
-            //   return Text(snapshot.data!.userId.toString());
-            // }
+            // ! handle error state
             else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
+              return Center(child: Text("${snapshot.error}"));
             }
-            return Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black)));
+            // ! handle data fetching success state
+            else if (snapshot.hasData) {
+              return Column(
+                children: [
+                  // ! for generating single widget
+                  ListTile(
+                    leading: Icon(Icons.person_add_alt,
+                        color: Colors.white, size: 24),
+                    title: Text(
+                      "U S E R S",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "List of users",
+                      style: TextStyle(
+                        color: Colors.white.withAlpha(80),
+                      ),
+                    ),
+                    tileColor: Colors.teal.shade900,
+                  ),
+
+                  Spacer(),
+
+                  // ! to generate multiple widgets
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.teal.shade900)),
+                    height: 300,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.take(5).length,
+                      itemBuilder: (context, index) {
+                        User user = snapshot.data![index];
+                        return ListTile(
+                          leading: Icon(Icons.person_add_alt),
+                          title: Text(user.id.toString()),
+                          subtitle: Text(user.name),
+                        );
+                      },
+                    ),
+                  ),
+                  // ! Expand to all the available space
+                  Spacer(),
+                  // ! to generate multiple widgets
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.teal.shade900)),
+                    height: 300,
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.sublist(6, 10).length,
+                      separatorBuilder: (context, index) => Divider(
+                        color: Colors.teal.shade900,
+                      ),
+                      itemBuilder: (context, index) {
+                        User user = snapshot.data![index];
+                        return ListTile(
+                          leading: Icon(Icons.person_add_alt),
+                          title: Text(user.id.toString()),
+                          subtitle: Text(user.name),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              );
+            }
+            // ! handle no data state
+            else {
+              return Center(
+                child: Text("No data found"),
+              );
+            }
           },
         ),
       ),

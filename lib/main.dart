@@ -10,10 +10,10 @@ import "screens/image_screen.dart";
 import "screens/input_screen.dart";
 import "screens/badge.view.dart";
 
-void main() => runApp(Layout());
+void main() => runApp(MyApp());
 
-class Layout extends StatelessWidget {
-  const Layout(
+class MyApp extends StatelessWidget {
+  const MyApp(
       {super.key}); // ! keys are used to uniquely identify the widgets in the widget tree;
   // ! crucial for state management and widget updates
 

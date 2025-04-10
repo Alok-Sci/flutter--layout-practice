@@ -42,10 +42,6 @@ class HomeScreen extends StatelessWidget {
       '/badge',
     ];
 
-    // print(drawerItemRoutesList.length);
-    // print(drawerItemIconsList.length);
-    // print(drawerItemTitlesList.length);
-
     final List<Map<String, dynamic>> drawerItems = [];
 
     for (var i = 0; i < drawerItemTitlesList.length; i++) {
@@ -59,22 +55,7 @@ class HomeScreen extends StatelessWidget {
 
     final Drawer menu = Drawer(
       backgroundColor: Colors.white,
-      child:
-          // ListView.builder(
-          //   itemCount: drawerItems.length,
-          //   itemBuilder: (context, index) {
-          //     return ListTile(
-          //       leading: Icon(
-          //         drawerItems[index]['icon'],
-          //       ),
-          //       title: Text("${drawerItems[index]['title']}"),
-          //       trailing: Icon(Icons.chevron_right),
-          //       onTap: () {
-          //         Navigator.pushNamed(context, drawerItems[index]['route']);
-          //       },
-          //     );
-          //   },
-          ListView(
+      child: ListView(
         children: [
           for (var i = 0; i < drawerItems.length; i++)
             ListTile(
